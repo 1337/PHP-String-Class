@@ -27,9 +27,29 @@
             return $this->contents;
         }
 
+        // required implementations ===========================================
+        function getIterator () {
+
+        }
+
+        function offsetExists () {
+
+        }
+
+        function offsetGet () {
+
+        }
+
+        function offsetSet () {
+
+        }
+
+        // public functions ===================================================
         public function capitalize () {
             // Return a copy of the string with its first character capitalized and the rest lowercased.
-            return new Str (mb_strtoupper ($this->contents));
+            return new Str (
+                mb_strtoupper ($this->contents)
+            );
         }
 
         public function center ($width, $fillchar = ' ') {
@@ -123,13 +143,17 @@
 
         public function join ($iterable) {
             // Return a string which is the concatenation of the strings in the iterable iterable. The separator between elements is the string providing this method.
-
+            return new Str (
+                implode ($this->contents, $iterable)
+            );
         }
 
         public function ljust ($width, $fillchar = ' ') {
             // Return the string left justified in a string of length width. Padding is done using the specified fillchar (default is a space). The original string is returned if width is less than or equal to len(s).
             // http://php.chinaunix.net/manual/tw/ref.mbstring.php#90611
-            return new Str ($this->_mb_str_pad ($width, $fillchar, STR_PAD_LEFT));
+            return new Str (
+                $this->_mb_str_pad ($width, $fillchar, STR_PAD_LEFT)
+            );
         }
 
         public function lower () {
@@ -149,118 +173,141 @@
 
         public function partition ($sep) {
             // Split the string at the first occurrence of sep, and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. If the separator is not found, return a 3-tuple containing the string itself, followed by two empty strings.
-        
+
         }
 
         public function replace ($old, $new, $count = PHP_INT_MAX) {
             // Return a copy of the string with all occurrences of substring old replaced by new. If the optional argument count is given, only the first count occurrences are replaced.
 
         }
-        
-        public function rfind(sub[, start[, end]]);
-        // Return the highest index in the string where substring sub is found, such that sub is contained within s[start:end]. Optional arguments start and end are interpreted as in slice notation. Return -1 on failure.
 
-        public function rindex(sub[, start[, end]]);
-        // Like rfind() but raises ValueError when the substring sub is not found.
+        public function rfind ($sub, $start = 0, $end = PHP_INT_MAX) {
+            // Return the highest index in the string where substring sub is found, such that sub is contained within s[start:end]. Optional arguments start and end are interpreted as in slice notation. Return -1 on failure.
+
+        }
+
+        public function rindex ($sub, $start = 0, $end = PHP_INT_MAX) {
+            // Like rfind() but raises ValueError when the substring sub is not found.
+
+        }
 
         public function rjust ($width, $fillchar = ' ') {
             // Return the string right justified in a string of length width. Padding is done using the specified fillchar (default is a space). The original string is returned if width is less than or equal to len(s).
             // http://php.chinaunix.net/manual/tw/ref.mbstring.php#90611
-            return new Str ($this->_mb_str_pad ($width, $fillchar, STR_PAD_RIGHT));
+            return new Str (
+                $this->_mb_str_pad ($width, $fillchar, STR_PAD_RIGHT)
+            );
         }
 
-        public function rpartition(sep);
-        // Split the string at the last occurrence of sep, and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. If the separator is not found, return a 3-tuple containing two empty strings, followed by the string itself.
-        // New in version 2.5.
+        public function rpartition ($sep) {
+            // Split the string at the last occurrence of sep, and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. If the separator is not found, return a 3-tuple containing two empty strings, followed by the string itself.
 
-        public function rsplit([sep[, maxsplit]]);
-        // Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done, the rightmost ones. If sep is not specified or None, any whitespace string is a separator. Except for splitting from the right, rsplit() behaves like split() which is described in detail below.
-        // New in version 2.4.
+        }
 
-        public function rstrip([chars]);
-        // Return a copy of the string with trailing characters removed. The chars argument is a string specifying the set of characters to be removed. If omitted or None, the chars argument defaults to removing whitespace. The chars argument is not a suffix; rather, all combinations of its values are stripped:
-        // >>>
-        // >>> '   spacious   '.rstrip()
-        // '   spacious'
-        // >>> 'mississippi'.rstrip('ipz')
-        // 'mississ'
-        // Changed in version 2.2.2: Support for the chars argument.
+        public function rsplit ($sep = ' ', $maxsplit = PHP_INT_MAX) {
+            // Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done, the rightmost ones. If sep is not specified or None, any whitespace string is a separator. Except for splitting from the right, rsplit() behaves like split() which is described in detail below.
 
-        public function split([sep[, maxsplit]]);
-        // Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done (thus, the list will have at most maxsplit+1 elements). If maxsplit is not specified, then there is no limit on the number of splits (all possible splits are made).
-        // If sep is given, consecutive delimiters are not grouped together and are deemed to delimit empty strings (for example, '1,,2'.split(',') returns ['1', '', '2']). The sep argument may consist of multiple characters (for example, '1<>2<>3'.split('<>') returns ['1', '2', '3']). Splitting an empty string with a specified separator returns [''].
-        // If sep is not specified or is None, a different splitting algorithm is applied: runs of consecutive whitespace are regarded as a single separator, and the result will contain no empty strings at the start or end if the string has leading or trailing whitespace. Consequently, splitting an empty string or a string consisting of just whitespace with a None separator returns [].
-        // For example, ' 1  2   3  '.split() returns ['1', '2', '3'], and '  1  2   3  '.split(None, 1) returns ['1', '2   3  '].
+        }
 
-        public function splitlines([keepends]);
-        // Return a list of the lines in the string, breaking at line boundaries. Line breaks are not included in the resulting list unless keepends is given and true.
+        public function rstrip ($chars = ' ') {
+            // Return a copy of the string with trailing characters removed. The chars argument is a string specifying the set of characters to be removed. If omitted or None, the chars argument defaults to removing whitespace. The chars argument is not a suffix; rather, all combinations of its values are stripped:
+            // >>>
+            // >>> '   spacious   '.rstrip()
+            // '   spacious'
+            // >>> 'mississippi'.rstrip('ipz')
+            // 'mississ'
 
-        public function startswith(prefix[, start[, end]]);
-        // Return True if string starts with the prefix, otherwise return False. prefix can also be a tuple of prefixes to look for. With optional start, test string beginning at that position. With optional end, stop comparing string at that position.
-        // Changed in version 2.5: Accept tuples as prefix.
+        }
 
-        public function strip([chars]);
-        // Return a copy of the string with the leading and trailing characters removed. The chars argument is a string specifying the set of characters to be removed. If omitted or None, the chars argument defaults to removing whitespace. The chars argument is not a prefix or suffix; rather, all combinations of its values are stripped:
-        // >>>
-        // >>> '   spacious   '.strip()
-        // 'spacious'
-        // >>> 'www.example.com'.strip('cmowz.')
-        // 'example'
-        // Changed in version 2.2.2: Support for the chars argument.
+        public function split ($sep = ' ', $maxsplit = PHP_INT_MAX) {
+            // Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done (thus, the list will have at most maxsplit+1 elements). If maxsplit is not specified, then there is no limit on the number of splits (all possible splits are made).
+            // If sep is given, consecutive delimiters are not grouped together and are deemed to delimit empty strings (for example, '1,,2'.split(',') returns ['1', '', '2']). The sep argument may consist of multiple characters (for example, '1<>2<>3'.split('<>') returns ['1', '2', '3']). Splitting an empty string with a specified separator returns [''].
+            // If sep is not specified or is None, a different splitting algorithm is applied: runs of consecutive whitespace are regarded as a single separator, and the result will contain no empty strings at the start or end if the string has leading or trailing whitespace. Consequently, splitting an empty string or a string consisting of just whitespace with a None separator returns [].
+            // For example, ' 1  2   3  '.split() returns ['1', '2', '3'], and '  1  2   3  '.split(None, 1) returns ['1', '2   3  '].
 
-        public function swapcase();
-        // Return a copy of the string with uppercase characters converted to lowercase and vice versa.
-        // For 8-bit strings, this method is locale-dependent.
+        }
 
-        public function title();
-        // Return a titlecased version of the string where words start with an uppercase character and the remaining characters are lowercase.
-        // The algorithm uses a simple language-independent definition of a word as groups of consecutive letters. The definition works in many contexts but it means that apostrophes in contractions and possessives form word boundaries, which may not be the desired result:
-        // >>>
-        // >>> "they're bill's friends from the UK".title()
-        // "They'Re Bill'S Friends From The Uk"
-        // A workaround for apostrophes can be constructed using regular expressions:
-        // >>>
-        // >>> import re
-        // >>> def titlecase(s):
-                // return re.sub(r"[A-Za-z]+('[A-Za-z]+)?",
-                              // lambda mo: mo.group(0)[0].upper() +
-                                         // mo.group(0)[1:].lower(),
-                              // s)
-        // >>> titlecase("they're bill's friends.")
-        // "They're Bill's Friends."
-        // For 8-bit strings, this method is locale-dependent.
+        public function splitlines ($keepends = false) {
+            // Return a list of the lines in the string, breaking at line boundaries. Line breaks are not included in the resulting list unless keepends is given and true.
 
-        public function translate(table[, deletechars]);
-        // Return a copy of the string where all characters occurring in the optional argument deletechars are removed, and the remaining characters have been mapped through the given translation table, which must be a string of length 256.
-        // You can use the maketrans() helper function in the string module to create a translation table. For string objects, set the table argument to None for translations that only delete characters:
-        // >>>
-        // >>> 'read this short text'.translate(None, 'aeiou')
-        // 'rd ths shrt txt'
-        // New in version 2.6: Support for a None table argument.
-        // For Unicode objects, the translate() method does not accept the optional deletechars argument. Instead, it returns a copy of the s where all characters have been mapped through the given translation table which must be a mapping of Unicode ordinals to Unicode ordinals, Unicode strings or None. Unmapped characters are left untouched. Characters mapped to None are deleted. Note, a more flexible approach is to create a custom character mapping codec using the codecs module (see encodings.cp1251 for an example).
+        }
 
-        public function upper();
-        // Return a copy of the string with all the cased characters [4] converted to uppercase. Note that str.upper().isupper() might be False if s contains uncased characters or if the Unicode category of the resulting character(s) is not “Lu” (Letter, uppercase), but e.g. “Lt” (Letter, titlecase).
-        // For 8-bit strings, this method is locale-dependent.
+        public function startswith ($prefix, $start = 0, $end = PHP_INT_MAX) {
+            // Return True if string starts with the prefix, otherwise return False. prefix can also be a tuple of prefixes to look for. With optional start, test string beginning at that position. With optional end, stop comparing string at that position.
 
-        public function zfill(width);
-        // Return the numeric string left filled with zeros in a string of length width. A sign prefix is handled correctly. The original string is returned if width is less than or equal to len(s).
-        // New in version 2.2.2.
+        }
 
-        protected function _mb_str_pad ($width, $fillchar, $pad_type) {
+        public function strip ($chars = ' ') {
+            // Return a copy of the string with the leading and trailing characters removed. The chars argument is a string specifying the set of characters to be removed. If omitted or None, the chars argument defaults to removing whitespace. The chars argument is not a prefix or suffix; rather, all combinations of its values are stripped:
+            // >>>
+            // >>> '   spacious   '.strip()
+            // 'spacious'
+            // >>> 'www.example.com'.strip('cmowz.')
+            // 'example'
+
+        }
+
+        public function swapcase () {
+            // Return a copy of the string with uppercase characters converted to lowercase and vice versa.
+
+        }
+
+        public function title () {
+            // Return a titlecased version of the string where words start with an uppercase character and the remaining characters are lowercase.
+            // The algorithm uses a simple language-independent definition of a word as groups of consecutive letters. The definition works in many contexts but it means that apostrophes in contractions and possessives form word boundaries, which may not be the desired result:
+            // >>>
+            // >>> "they're bill's friends from the UK".title()
+            // "They'Re Bill'S Friends From The Uk"
+            // A workaround for apostrophes can be constructed using regular expressions:
+            // >>>
+            // >>> import re
+            // >>> def titlecase(s):
+                    // return re.sub(r"[A-Za-z]+('[A-Za-z]+)?",
+                                  // lambda mo: mo.group(0)[0].upper() +
+                                             // mo.group(0)[1:].lower(),
+                                  // s)
+            // >>> titlecase("they're bill's friends.")
+            // "They're Bill's Friends."
+
+        }
+
+        public function translate ($table, $deletechars = null) {
+            // Return a copy of the string where all characters occurring in the optional argument deletechars are removed, and the remaining characters have been mapped through the given translation table, which must be a string of length 256.
+            // You can use the maketrans() helper function in the string module to create a translation table. For string objects, set the table argument to None for translations that only delete characters:
+            // >>>
+            // >>> 'read this short text'.translate(None, 'aeiou')
+            // 'rd ths shrt txt'
+            // New in version 2.6: Support for a None table argument.
+            // For Unicode objects, the translate() method does not accept the optional deletechars argument. Instead, it returns a copy of the s where all characters have been mapped through the given translation table which must be a mapping of Unicode ordinals to Unicode ordinals, Unicode strings or None. Unmapped characters are left untouched. Characters mapped to None are deleted. Note, a more flexible approach is to create a custom character mapping codec using the codecs module (see encodings.cp1251 for an example).
+
+        }
+
+        public function upper () {
+            // Return a copy of the string with all the cased characters [4] converted to uppercase. Note that str.upper().isupper() might be False if s contains uncased characters or if the Unicode category of the resulting character(s) is not “Lu” (Letter, uppercase), but e.g. “Lt” (Letter, titlecase).
+            // For 8-bit strings, this method is locale-dependent.
+
+        }
+
+        public function zfill ($width) {
+            // Return the numeric string left filled with zeros in a string of length width. A sign prefix is handled correctly. The original string is returned if width is less than or equal to len(s).
+
+        }
+
+        // private functions ==================================================
+        private function _mb_str_pad ($width, $fillchar, $pad_type) {
             // http://php.chinaunix.net/manual/tw/ref.mbstring.php#90611
             return str_pad (
                 $this->contents, // input
-                strlen ($this->contents) - mb_strlen ($this->contents, self::DEFAULT_ENCODING) + $width, // length
+                strlen ($this->contents)
+                    - mb_strlen ($this->contents, self::DEFAULT_ENCODING)
+                    + $width, // length
                 $fillchar, // pad_string
                 $pad_type // pad_type
             );
         }
-    }
-/*
-    // why doesn't this function exist?
-    if(!function_exists('mb_str_replace')) {
-        function mb_str_replace($search, $replace, $subject) {
+
+        private function _mb_str_replace ($search, $replace, $subject) {
+            // why doesn't this function exist?
             if(is_array($subject)) {
                 $ret = array();
                 foreach($subject as $key => $val) {
@@ -281,20 +328,17 @@
             }
             return $subject;
         }
-    }
-    if(!function_exists('mb_str_split')) {
-        function mb_str_split($str, $length = 1) {
-            if ($length < 1) return FALSE;
 
+        private function _mb_str_split ($str, $length = 1) {
+            if ($length < 1) return false;
             $result = array();
-
             for ($i = 0; $i < mb_strlen($str); $i += $length) {
                 $result[] = mb_substr($str, $i, $length);
             }
-
             return $result;
         }
     }
+/*
 
     class StaticString {
         // static methods wrapping multibyte
@@ -617,10 +661,6 @@
         public function push ($value) {
             $this[] = $value;
             return $this;
-        }
-
-        public function join ($paste = '') {
-            return implode($paste, $this->getArrayCopy());
         }
 
         public function sort () {
