@@ -103,30 +103,36 @@
             );
         }
 
-        public function charCodeAt ($str, $point) {
+        public function charCodeAt ($point) {
             // JS
-            return ord(self::substr($str, $point, 1));
+            // ord() is not unicode-safe!
+            return ord (mb_substr (
+                $this->contents,
+                $point,
+                1, 
+                self::DEFAULT_ENCODING)
+            );
         }
 
-        public static function concat () {
+        public function concat () {
+            // returns added function arguments to the string.
+            // original string is not modified.
             $args = func_get_args();
-            $r = "";
+            $r = $this->contents;
             foreach($args as $arg) {
-                $r .= (string)$arg;
+                $r .= (string) new Str ($arg);
             }
-            return $arg;
+            return new Str ($r);
         }
 
         public function count ($sub, $start = 0, $end = PHP_INT_MAX) {
             // Return the number of non-overlapping occurrences of substring 
             // sub in the range [start, end]. Optional arguments start and end 
             // are interpreted as in slice notation.
-            return new Str (
-                mb_substr_count (
-                    $this->contents, // haystack
-                    $sub, // needle
-                    self::DEFAULT_ENCODING
-                )
+            return mb_substr_count (
+                $this->contents, // haystack
+                (string) $sub, // needle
+                self::DEFAULT_ENCODING
             );
         }
 
@@ -184,7 +190,7 @@
             // Optional arguments start and end are interpreted as in slice 
             // notation. Return -1 if sub is not found.
             $res = mb_strpos (
-                $this->contents,
+                mb_substr ($this->contents, $start, $end, self::DEFAULT_ENCODING),
                 $sub,
                 $start,
                 self::DEFAULT_ENCODING
@@ -222,11 +228,11 @@
 
         }
         
-        public function fromCharCode () {
+        public function fromCharCode ($code) {
             // http://www.php.net/manual/en/function.chr.php#69082
             // JS
             return mb_convert_encoding (
-                pack ("N", $this->contents[0]),
+                pack ("N", $code),
                 self::DEFAULT_ENCODING,
                 'UCS-4BE'
             );
@@ -242,7 +248,7 @@
             // there is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
-                _match ("/^([A-Z0-9])*$/is")
+                $this->_match ("/^([A-Z0-9])+$/is")
             );
         }
 
@@ -251,7 +257,7 @@
             // there is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
-                _match ("/^([A-Z])*$/is")
+                $this->_match ("/^([A-Z])+$/is")
             );
         }
 
@@ -260,7 +266,7 @@
             // is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
-                _match ("/^([0-9])*$/is")
+                $this->_match ("/^([0-9])+$/is")
             );
         }
 
@@ -276,7 +282,7 @@
             // string and there is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
-                _match ("/^\s*$/s")
+                $this->_match ("/^\s+$/s")
             );
 
         }
@@ -645,3 +651,4 @@
 
         // end static wrapper methods
     }
+*/
