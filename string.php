@@ -20,7 +20,14 @@
         const DEFAULT_ENCODING = 'UTF-8';
 
         public function __construct ($contents) {
-            $this->contents = $contents;
+            // force convert all incoming strings to UTF-8.
+            // http://ca2.php.net/manual/en/function.mb-convert-encoding.php
+            // http://ca2.php.net/manual/en/function.mb-detect-encoding.php
+            $this->contents = mb_convert_encoding (
+                $contents,
+                self::DEFAULT_ENCODING,
+                mb_detect_encoding ($contents, "UTF-8")
+            );
         }
 
         public function __toString () {
@@ -28,37 +35,66 @@
         }
 
         // required implementations ===========================================
-        function getIterator () {
-
+        public function getIterator() {
+            // http://ca2.php.net/manual/en/class.iteratoraggregate.php
+            // ?!
+            return new ArrayIterator ($this);
         }
 
-        function offsetExists () {
+        // ArrayAccess Methods
+        public function offsetExists ($index) {
+            // offsetExists ( mixed $index )
+            // Similar to array_key_exists
 
+            // ?!
+            return isset ($this->contents[$index]);
         }
 
-        function offsetGet () {
+        public function offsetGet ($index) {
+            // offsetGet ( mixed $index )
+            // Retrieves an array value
 
+            // ?!
+            return $this->contents[$index];
         }
 
-        function offsetSet () {
+        public function offsetSet ($index, $val) {
+            // offsetSet ( mixed $index, mixed $val )
+            // Sets an array value
 
+            // ?!
+            $this->contents[$index] = $val;
+        }
+
+        public function offsetUnset ($index) {
+            // offsetUnset ( mixed $index )
+            // Removes an array value
+
+            // ?!
+            $this->contents[$index] = null;
         }
 
         // public functions ===================================================
         public function capitalize () {
-            // Return a copy of the string with its first character capitalized and the rest lowercased.
+            // Return a copy of the string with its first character capitalized
+            // and the rest lowercased.
             return new Str (
                 mb_strtoupper ($this->contents)
             );
         }
 
         public function center ($width, $fillchar = ' ') {
-            // Return centered in a string of length width. Padding is done using the specified fillchar (default is a space).
-            return new Str ($this->_mb_str_pad ($width, $fillchar, STR_PAD_BOTH));
+            // Return centered in a string of length width. Padding is done 
+            // using the specified fillchar (default is a space).
+            return new Str (
+                $this->_mb_str_pad ($width, $fillchar, STR_PAD_BOTH)
+            );
         }
 
         public function count ($sub, $start = 0, $end = PHP_INT_MAX) {
-            // Return the number of non-overlapping occurrences of substring sub in the range [start, end]. Optional arguments start and end are interpreted as in slice notation.
+            // Return the number of non-overlapping occurrences of substring 
+            // sub in the range [start, end]. Optional arguments start and end 
+            // are interpreted as in slice notation.
             return new Str (
                 mb_substr_count (
                     $this->contents, // haystack
@@ -68,25 +104,75 @@
             );
         }
 
-        public function decode ($encoding = self::DEFAULT_ENCODING, $errors = 'ignore') {
-            // Decodes the string using the codec registered for encoding. encoding defaults to the default string encoding. errors may be given to set a different error handling scheme. The default is 'strict', meaning that encoding errors raise UnicodeError. Other possible values are 'ignore', 'replace' and any other name registered via codecs.register_error(), see section Codec Base Classes.
+        public function decode ($encoding = self::DEFAULT_ENCODING,
+                                $errors = 'ignore') {
+            // Decodes the string using the codec registered for encoding. 
+            // encoding defaults to the default string encoding. errors may be 
+            // given to set a different error handling scheme. The default is 
+            // 'strict', meaning that encoding errors raise UnicodeError. Other
+            // possible values are 'ignore', 'replace' and any other name 
+            // registered via codecs.register_error(), see section Codec Base 
+            // Classes.
 
             // not implemented (makes no sense)
         }
 
-        public function encode ($encoding = self::DEFAULT_ENCODING, $errors = 'ignore') {
-            // Return an encoded version of the string. Default encoding is the current default string encoding. errors may be given to set a different error handling scheme. The default for errors is 'strict', meaning that encoding errors raise a UnicodeError. Other possible values are 'ignore', 'replace', 'xmlcharrefreplace', 'backslashreplace' and any other name registered via codecs.register_error(), see section Codec Base Classes. For a list of possible encodings, see section Standard Encodings.
+        public function encode ($encoding = self::DEFAULT_ENCODING, 
+                                $errors = 'ignore') {
+            // Return an encoded version of the string. Default encoding is the
+            // current default string encoding. errors may be given to set a 
+            // different error handling scheme. The default for errors is 
+            // 'strict', meaning that encoding errors raise a UnicodeError. 
+            // Other possible values are 'ignore', 'replace', 
+            // 'xmlcharrefreplace', 'backslashreplace' and any other name 
+            // registered via codecs.register_error(), see section Codec Base 
+            // Classes. For a list of possible encodings, see section Standard 
+            // Encodings.
 
             // not implemented (makes no sense)
         }
 
         public function endswith ($suffix, $start = 0, $end = PHP_INT_MAX) {
-            // Return True if the string ends with the specified suffix, otherwise return False. suffix can also be a tuple of suffixes to look for. With optional start, test beginning at that position. With optional end, stop comparing at that position.
+            // Return True if the string ends with the specified suffix, 
+            // otherwise return False. suffix can also be a tuple of suffixes 
+            // to look for. With optional start, test beginning at that 
+            // position. With optional end, stop comparing at that position.
 
+            // http://www.php.net/manual/en/function.mb-substr.php
+            $tmp_str = mb_substr ($this->contents, $start, $end, 
+                                  self::DEFAULT_ENCODING);
+            return (
+                mb_substr (
+                    $tmp_str, // haystack
+                    -(mb_strlen ($tmp_str, self::DEFAULT_ENCODING)), // needle
+                    PHP_INT_MAX,
+                    self::DEFAULT_ENCODING
+                ) === $suffix
+            );
         }
 
-        public function find ($sub, $start = 0, $end = PHP_INT_MAX) {
-            // Return the lowest index in the string where substring sub is found, such that sub is contained in the slice s[start:end]. Optional arguments start and end are interpreted as in slice notation. Return -1 if sub is not found.
+        public function find ($sub, $start = 0, $end = PHP_INT_MAX,
+                              $raise_error = false) {
+            // Return the lowest index in the string where substring sub is 
+            // found, such that sub is contained in the slice s[start:end]. 
+            // Optional arguments start and end are interpreted as in slice 
+            // notation. Return -1 if sub is not found.
+            $res = mb_strpos (
+                $this->contents,
+                $sub,
+                $start,
+                self::DEFAULT_ENCODING
+            );
+            
+            if ($res === false) {
+                if ($raise_error) {
+                    throw new Exception ("ValueError");
+                } else {
+                    return -1;
+                }
+            } else {
+                return $res;
+            }
         }
 
         // public function format(*args, **kwargs);
@@ -101,33 +187,47 @@
 
         }
 
-        public function index($sub, $start = 0, $end = PHP_INT_MAX) {
+        public function index ($sub, $start = 0, $end = PHP_INT_MAX) {
             // Like find(), but raise ValueError when the substring is not found.
-
+            
+            return $this->find ($sub, $start, $end, true);
         }
 
         public function isalnum () {
             // Return true if all characters in the string are alphanumeric and there is at least one character, false otherwise.
-
+            return (
+                mb_strlen ($this->contents) >= 1 && 
+                _match ("/^([A-Z0-9])*$/is")
+            );
         }
 
         public function isalpha () {
             // Return true if all characters in the string are alphabetic and there is at least one character, false otherwise.
-
+            return (
+                mb_strlen ($this->contents) >= 1 && 
+                _match ("/^([A-Z])*$/is")
+            );
         }
 
         public function isdigit () {
             // Return true if all characters in the string are digits and there is at least one character, false otherwise.
-
+            return (
+                mb_strlen ($this->contents) >= 1 && 
+                _match ("/^([0-9])*$/is")
+            );
         }
 
         public function islower () {
             // Return true if all cased characters [4] in the string are lowercase and there is at least one cased character, false otherwise.
-
+            return mb_strtolower ($this->contents) === $this->contents;
         }
 
         public function isspace () {
             // Return true if there are only whitespace characters in the string and there is at least one character, false otherwise.
+            return (
+                mb_strlen ($this->contents) >= 1 && 
+                _match ("/^\s*$/s")
+            );
 
         }
 
@@ -138,7 +238,7 @@
 
         public function isupper () {
             // Return true if all cased characters [4] in the string are uppercase and there is at least one cased character, false otherwise.
-
+            return mb_strtoupper ($this->contents) === $this->contents;
         }
 
         public function join ($iterable) {
@@ -158,7 +258,9 @@
 
         public function lower () {
             // Return a copy of the string with all the cased characters [4] converted to lowercase.
-
+            return new Str (
+                mb_strtolower ($this->contents, self::DEFAULT_ENCODING)
+            );            
         }
 
         public function lstrip ($chars = ' ') {
@@ -168,17 +270,26 @@
             // 'spacious   '
             // >>> 'www.example.com'.lstrip('cmowz.')
             // 'example.com'
-
+            return preg_replace ('/(^\s+)/s', '', $this->contents);
         }
 
         public function partition ($sep) {
             // Split the string at the first occurrence of sep, and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. If the separator is not found, return a 3-tuple containing the string itself, followed by two empty strings.
 
+            $sep_pos = mb_strpos ($this->contents, $sep, 0, self::DEFAULT_ENCODING);
+            return array (
+                mb_substr ($this->contents, 0, mb_strlen($sep_pos), self::DEFAULT_ENCODING),
+                $sep,
+                mb_substr ($this->contents, $sep_pos + 1,PHP_INT_MAX, self::DEFAULT_ENCODING)
+            );
         }
 
         public function replace ($old, $new, $count = PHP_INT_MAX) {
             // Return a copy of the string with all occurrences of substring old replaced by new. If the optional argument count is given, only the first count occurrences are replaced.
-
+            // $search, $replace, $subject, $encoding
+            return new Str (
+                $this->_mb_str_replace ($old, $new, $this->contents, self::DEFAULT_ENCODING)
+            );
         }
 
         public function rfind ($sub, $start = 0, $end = PHP_INT_MAX) {
@@ -217,6 +328,7 @@
             // >>> 'mississippi'.rstrip('ipz')
             // 'mississ'
 
+            return preg_replace ('/(\s+$)/s', '', $this->contents);
         }
 
         public function split ($sep = ' ', $maxsplit = PHP_INT_MAX) {
@@ -229,12 +341,20 @@
 
         public function splitlines ($keepends = false) {
             // Return a list of the lines in the string, breaking at line boundaries. Line breaks are not included in the resulting list unless keepends is given and true.
-
+            return mb_split ("/\n/s", $this->contents);
         }
 
         public function startswith ($prefix, $start = 0, $end = PHP_INT_MAX) {
             // Return True if string starts with the prefix, otherwise return False. prefix can also be a tuple of prefixes to look for. With optional start, test string beginning at that position. With optional end, stop comparing string at that position.
-
+            $tmp_str = mb_substr ($this->contents, $start, $end, self::DEFAULT_ENCODING);
+            return (
+                mb_substr (
+                    $tmp_str,
+                    0,
+                    mb_strlen ($tmp_str, self::DEFAULT_ENCODING),
+                    self::DEFAULT_ENCODING
+                ) === $suffix
+            );
         }
 
         public function strip ($chars = ' ') {
@@ -244,7 +364,7 @@
             // 'spacious'
             // >>> 'www.example.com'.strip('cmowz.')
             // 'example'
-
+            return preg_replace ('/(^\s+)|(\s+$)/s', '', $this->contents);            
         }
 
         public function swapcase () {
@@ -285,7 +405,9 @@
         public function upper () {
             // Return a copy of the string with all the cased characters [4] converted to uppercase. Note that str.upper().isupper() might be False if s contains uncased characters or if the Unicode category of the resulting character(s) is not “Lu” (Letter, uppercase), but e.g. “Lt” (Letter, titlecase).
             // For 8-bit strings, this method is locale-dependent.
-
+            return new Str (
+                mb_strtoupper ($this->contents)
+            );
         }
 
         public function zfill ($width) {
@@ -306,12 +428,12 @@
             );
         }
 
-        private function _mb_str_replace ($search, $replace, $subject) {
+        private function _mb_str_replace ($search, $replace, $subject, $encoding) {
             // why doesn't this function exist?
             if(is_array($subject)) {
                 $ret = array();
                 foreach($subject as $key => $val) {
-                    $ret[$key] = mb_str_replace($search, $replace, $val);
+                    $ret[$key] = $this->_mb_str_replace($search, $replace, $val, $encoding);
                 }
                 return $ret;
             }
@@ -320,10 +442,33 @@
                     continue;
                 }
                 $r = !is_array($replace) ? $replace : (array_key_exists($key, $replace) ? $replace[$key] : '');
-                $pos = mb_strpos($subject, $s);
+                $pos = mb_strpos($subject, $s, 0, self::DEFAULT_ENCODING);
                 while($pos !== false) {
-                    $subject = mb_substr($subject, 0, $pos) . $r . mb_substr($subject, $pos + mb_strlen($s));
-                    $pos = mb_strpos($subject, $s, $pos + mb_strlen($r));
+                    $subject = mb_substr (
+                        $subject, 
+                        0, 
+                        $pos, 
+                        self::DEFAULT_ENCODING
+                    ) . 
+                    $r . 
+                    mb_substr (
+                        $subject, 
+                        $pos + mb_strlen (
+                            $s, 
+                            self::DEFAULT_ENCODING
+                        ), 
+                        PHP_INT_MAX, 
+                        self::DEFAULT_ENCODING
+                    );
+                    $pos = mb_strpos (
+                        $subject, 
+                        $s, 
+                        $pos + mb_strlen(
+                            $r, 
+                            self::DEFAULT_ENCODING
+                        ), 
+                        self::DEFAULT_ENCODING
+                    );
                 }
             }
             return $subject;
@@ -336,6 +481,13 @@
                 $result[] = mb_substr($str, $i, $length);
             }
             return $result;
+        }
+        
+        private function _match ($pattern, $subject = null) {
+            if ($subject === null) {
+                $subject = $this->contents;
+            }
+            return preg_match ($pattern, $subject) === 1;
         }
     }
 /*
@@ -425,15 +577,6 @@
             return new String($r);
         }
 
-        public static function strlen ($string) {
-            if(String::$multibyte) {
-                return mb_strlen($string, String::$multibyte_encoding);
-            }
-            else {
-                return strlen($string);
-            }
-        }
-
         public static function slice ($string, $start, $end = null) {
             return self::substring($string, $start, $end);
         }
@@ -498,39 +641,6 @@
 
         // end magic methods
 
-        // ArrayAccess Methods
-
-        // offsetExists ( mixed $index )
-            //
-            // Similar to array_key_exists
-            //
-        public function offsetExists ($index) {
-            return !empty($this->value[$index]);
-        }
-
-        // offsetGet ( mixed $index )
-        //
-        // Retrieves an array value
-        //
-        public function offsetGet ($index) {
-            return StaticString::substr($this->value, $index, 1)->toString();
-        }
-
-        // offsetSet ( mixed $index, mixed $val )
-        //
-        // Sets an array value
-        //
-        public function offsetSet ($index, $val) {
-            $this->value = StaticString::substring($this->value, 0, $index) . $val . StaticString::substring($this->value, $index+1, StaticString::strlen($this->value));
-        }
-
-        // offsetUnset ( mixed $index )
-        //
-        // Removes an array value
-        //
-        public function offsetUnset ($index) {
-            $this->value = StaticString::substr($this->value, 0, $index) . StaticString::substr($this->value, $index+1);
-        }
 
         public static function create ($obj) {
             if($obj instanceof String) return new String($obj);
