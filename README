@@ -1,5 +1,5 @@
-Provides an equivalent of Javascript's string class. It also uses
-mbstring functions by default if you have mbstring enabled.
+Provides an equivalent of Python's unicode class. some JavaScript functions
+can also be used, but are not recommended.
 
 See examples.php for extensive examples.
 

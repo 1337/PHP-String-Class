@@ -91,6 +91,32 @@
             );
         }
 
+        public function charAt ($point) {
+            // JS
+            return new Str (
+                mb_substr (
+                    $this->contents,
+                    $point, 
+                    1,
+                    self::DEFAULT_ENCODING
+                )
+            );
+        }
+
+        public function charCodeAt ($str, $point) {
+            // JS
+            return ord(self::substr($str, $point, 1));
+        }
+
+        public static function concat () {
+            $args = func_get_args();
+            $r = "";
+            foreach($args as $arg) {
+                $r .= (string)$arg;
+            }
+            return $arg;
+        }
+
         public function count ($sub, $start = 0, $end = PHP_INT_MAX) {
             // Return the number of non-overlapping occurrences of substring 
             // sub in the range [start, end]. Optional arguments start and end 
@@ -177,24 +203,43 @@
 
         // public function format(*args, **kwargs);
         public function format () {
-            // Perform a string formatting operation. The string on which this method is called can contain literal text or replacement fields delimited by braces {}. Each replacement field contains either the numeric index of a positional argument, or the name of a keyword argument. Returns a copy of the string where each replacement field is replaced with the string value of the corresponding argument.
+            // Perform a string formatting operation. The string on which this 
+            // method is called can contain literal text or replacement fields 
+            // delimited by braces {}. Each replacement field contains either 
+            // the numeric index of a positional argument, or the name of a 
+            // keyword argument. Returns a copy of the string where each 
+            // replacement field is replaced with the string value of the 
+            // corresponding argument.
             // >>>
             // >>> "The sum of 1 + 2 is {0}".format(1+2)
             // 'The sum of 1 + 2 is 3'
-            // See Format String Syntax for a description of the various formatting options that can be specified in format strings.
-            // This method of string formatting is the new standard in Python 3.0, and should be preferred to the % formatting described in String Formatting Operations in new code.
+            // See Format String Syntax for a description of the various 
+            // formatting options that can be specified in format strings.
+            // This method of string formatting is the new standard in Python 
+            // 3.0, and should be preferred to the % formatting described in 
+            // String Formatting Operations in new code.
             // New in version 2.6.
 
+        }
+        
+        public function fromCharCode () {
+            // http://www.php.net/manual/en/function.chr.php#69082
+            // JS
+            return mb_convert_encoding (
+                pack ("N", $this->contents[0]),
+                self::DEFAULT_ENCODING,
+                'UCS-4BE'
+            );
         }
 
         public function index ($sub, $start = 0, $end = PHP_INT_MAX) {
             // Like find(), but raise ValueError when the substring is not found.
-            
             return $this->find ($sub, $start, $end, true);
         }
 
         public function isalnum () {
-            // Return true if all characters in the string are alphanumeric and there is at least one character, false otherwise.
+            // Return true if all characters in the string are alphanumeric and
+            // there is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
                 _match ("/^([A-Z0-9])*$/is")
@@ -202,7 +247,8 @@
         }
 
         public function isalpha () {
-            // Return true if all characters in the string are alphabetic and there is at least one character, false otherwise.
+            // Return true if all characters in the string are alphabetic and 
+            // there is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
                 _match ("/^([A-Z])*$/is")
@@ -210,7 +256,8 @@
         }
 
         public function isdigit () {
-            // Return true if all characters in the string are digits and there is at least one character, false otherwise.
+            // Return true if all characters in the string are digits and there
+            // is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
                 _match ("/^([0-9])*$/is")
@@ -218,12 +265,15 @@
         }
 
         public function islower () {
-            // Return true if all cased characters [4] in the string are lowercase and there is at least one cased character, false otherwise.
-            return mb_strtolower ($this->contents) === $this->contents;
+            // Return true if all cased characters [4] in the string are 
+            // lowercase and there is at least one cased character, false 
+            // otherwise.
+            return ((string) $this->lower ()) === $this->contents;
         }
 
         public function isspace () {
-            // Return true if there are only whitespace characters in the string and there is at least one character, false otherwise.
+            // Return true if there are only whitespace characters in the 
+            // string and there is at least one character, false otherwise.
             return (
                 mb_strlen ($this->contents) >= 1 && 
                 _match ("/^\s*$/s")
@@ -232,24 +282,34 @@
         }
 
         public function istitle () {
-            // Return true if the string is a titlecased string and there is at least one character, for example uppercase characters may only follow uncased characters and lowercase characters only cased ones. Return false otherwise.
+            // Return true if the string is a titlecased string and there is at
+            // least one character, for example uppercase characters may only 
+            // follow uncased characters and lowercase characters only cased 
+            // ones. Return false otherwise.
 
         }
 
         public function isupper () {
-            // Return true if all cased characters [4] in the string are uppercase and there is at least one cased character, false otherwise.
-            return mb_strtoupper ($this->contents) === $this->contents;
+            // Return true if all cased characters [4] in the string are 
+            // uppercase and there is at least one cased character, false 
+            // otherwise.
+            return ((string) $this->upper ()) === $this->contents;
         }
 
         public function join ($iterable) {
-            // Return a string which is the concatenation of the strings in the iterable iterable. The separator between elements is the string providing this method.
+            // Return a string which is the concatenation of the strings in the
+            // iterable iterable. The separator between elements is the string
+            // providing this method.
             return new Str (
                 implode ($this->contents, $iterable)
             );
         }
 
         public function ljust ($width, $fillchar = ' ') {
-            // Return the string left justified in a string of length width. Padding is done using the specified fillchar (default is a space). The original string is returned if width is less than or equal to len(s).
+            // Return the string left justified in a string of length width. 
+            // Padding is done using the specified fillchar (default is a 
+            // space). The original string is returned if width is less than 
+            // or equal to len(s).
             // http://php.chinaunix.net/manual/tw/ref.mbstring.php#90611
             return new Str (
                 $this->_mb_str_pad ($width, $fillchar, STR_PAD_LEFT)
@@ -257,14 +317,19 @@
         }
 
         public function lower () {
-            // Return a copy of the string with all the cased characters [4] converted to lowercase.
+            // Return a copy of the string with all the cased characters [4] 
+            // converted to lowercase.
             return new Str (
                 mb_strtolower ($this->contents, self::DEFAULT_ENCODING)
             );            
         }
 
         public function lstrip ($chars = ' ') {
-            // Return a copy of the string with leading characters removed. The chars argument is a string specifying the set of characters to be removed. If omitted or None, the chars argument defaults to removing whitespace. The chars argument is not a prefix; rather, all combinations of its values are stripped:
+            // Return a copy of the string with leading characters removed. The
+            // chars argument is a string specifying the set of characters to 
+            // be removed. If omitted or None, the chars argument defaults to 
+            // removing whitespace. The chars argument is not a prefix; rather,
+            // all combinations of its values are stripped:
             // >>>
             // >>> '   spacious   '.lstrip()
             // 'spacious   '
@@ -274,7 +339,11 @@
         }
 
         public function partition ($sep) {
-            // Split the string at the first occurrence of sep, and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. If the separator is not found, return a 3-tuple containing the string itself, followed by two empty strings.
+            // Split the string at the first occurrence of sep, and return a 
+            // 3-tuple containing the part before the separator, the separator 
+            // itself, and the part after the separator. If the separator is 
+            // not found, return a 3-tuple containing the string itself, 
+            // followed by two empty strings.
 
             $sep_pos = mb_strpos ($this->contents, $sep, 0, self::DEFAULT_ENCODING);
             return array (
@@ -285,7 +354,9 @@
         }
 
         public function replace ($old, $new, $count = PHP_INT_MAX) {
-            // Return a copy of the string with all occurrences of substring old replaced by new. If the optional argument count is given, only the first count occurrences are replaced.
+            // Return a copy of the string with all occurrences of substring 
+            // old replaced by new. If the optional argument count is given, 
+            // only the first count occurrences are replaced.
             // $search, $replace, $subject, $encoding
             return new Str (
                 $this->_mb_str_replace ($old, $new, $this->contents, self::DEFAULT_ENCODING)
@@ -293,7 +364,10 @@
         }
 
         public function rfind ($sub, $start = 0, $end = PHP_INT_MAX) {
-            // Return the highest index in the string where substring sub is found, such that sub is contained within s[start:end]. Optional arguments start and end are interpreted as in slice notation. Return -1 on failure.
+            // Return the highest index in the string where substring sub is 
+            // found, such that sub is contained within s[start:end]. Optional 
+            // arguments start and end are interpreted as in slice notation. 
+            // Return -1 on failure.
 
         }
 
@@ -389,6 +463,16 @@
             // >>> titlecase("they're bill's friends.")
             // "They're Bill's Friends."
 
+        }
+        
+        public function toLowerCase () {
+            // JS
+            return $this->lower();
+        }
+
+        public function toUpperCase () {
+            // JS
+            return $this->upper();
         }
 
         public function translate ($table, $deletechars = null) {
@@ -492,20 +576,6 @@
     }
 /*
 
-    class StaticString {
-        // static methods wrapping multibyte
-
-        //
-        // Wrapper for substr
-        //
-        public static function substr ($string, $start, $length = null) {
-            if(String::$multibyte) {
-                return new String(mb_substr($string, $start, $length, String::$multibyte_encoding));
-            }
-            else {
-                return new String(substr($string, $start, $length));
-            }
-        }
 
         //
         // Equivelent of Javascript's String.substring
@@ -518,26 +588,6 @@
             return self::substr($string, $end - $start);
         }
 
-        public function charAt ($str, $point) {
-            return self::substr($str, $point, 1);
-        }
-
-        public function charCodeAt ($str, $point) {
-            return ord(self::substr($str, $point, 1));
-        }
-
-        public static function concat () {
-            $args = func_get_args();
-            $r = "";
-            foreach($args as $arg) {
-                $r .= (string)$arg;
-            }
-            return $arg;
-        }
-
-        public static function fromCharCode ($code) {
-            return chr($code);
-        }
 
         public static function indexOf ($haystack, $needle, $offset = 0) {
             if(String::$multibyte) {
@@ -581,26 +631,6 @@
             return self::substring($string, $start, $end);
         }
 
-        public static function toLowerCase ($string) {
-            if(String::$multibyte) {
-                return new String(mb_strtolower($string, String::$multibyte_encoding));
-            }
-            else {
-                return new String(strtolower($string));
-            }
-
-        }
-
-        public static function toUpperCase ($string) {
-            if(String::$multibyte) {
-                return new String(mb_strtoupper($string, String::$multibyte_encoding));
-            }
-            else {
-                return new STring(strtoupper($string));
-            }
-
-        }
-
         public static function split ($string, $at = '') {
             if(empty($at)) {
                 if(String::$multibyte) {
@@ -615,188 +645,3 @@
 
         // end static wrapper methods
     }
-    class String implements ArrayAccess {
-        private $value;
-
-        public static $multibyte = false;
-        private static $checked = false;
-        public static $multibyte_encoding = null;
-
-        // magic methods
-        public function __construct ($string) {
-            if(!self::$checked) {
-                self::$multibyte = extension_loaded('mbstring');
-            }
-            if(is_null(self::$multibyte_encoding)) {
-                if(self::$multibyte) {
-                    self::$multibyte_encoding = mb_internal_encoding();
-                }
-            }
-            $this->value = (string)$string;
-        }
-
-        public function __toString () {
-            return $this->value;
-        }
-
-        // end magic methods
-
-
-        public static function create ($obj) {
-            if($obj instanceof String) return new String($obj);
-            return new String($obj);
-        }
-
-        // public methods
-        public function substr ($start, $length) {
-            return StaticString::substr($this->value, $start, $length);
-        }
-
-        public function substring ($start, $end) {
-            return StaticString::substring($this->value, $start, $end);
-        }
-
-        public function charAt ($point) {
-            return StaticString::substr($this->value, $point, 1);
-        }
-
-        public function charCodeAt ($point) {
-            return ord(StaticString::substr($this->value, $point, 1));
-        }
-
-        public function indexOf ($needle, $offset) {
-            return StaticString::indexOf($this->value, $needle, $offset);
-        }
-
-        public function lastIndexOf ($needle) {
-            return StaticString::lastIndexOf($this->value, $needle);
-        }
-
-        public function match ($regex) {
-            return StaticString::match($this->value, $regex);
-        }
-
-        public function replace ($search, $replace, $regex = false) {
-            return StaticString::replace($this->value, $search, $replace, $regex);
-        }
-
-        public function first () {
-            return StaticString::substr($this->value, 0, 1);
-        }
-
-        public function last () {
-            return StaticString::substr($this->value, -1, 1);
-        }
-
-        public function search ($search, $offset = null) {
-            return $this->indexOf($search, $offset);
-        }
-
-        public function slice ($start, $end = null) {
-            return StaticString::slice($this->value, $start, $end);
-        }
-
-        public function toLowerCase () {
-            return StaticString::toLowerCase($this->value);
-        }
-
-        public function toUpperCase () {
-            return StaticString::toUpperCase($this->value);
-        }
-
-        public function toUpper () {
-            return $this->toUpperCase();
-        }
-
-        public function toLower () {
-            return $this->toLowerCase();
-        }
-
-        public function split ($at = '') {
-            return StaticString::split($this->value, $at);
-        }
-
-        public function trim ($charlist = null) {
-            return new String(trim($this->value, $charlist));
-        }
-
-        public function ltrim ($charlist = null) {
-            return new String(ltrim($this->value, $charlist));
-        }
-
-        public function rtrim ($charlist = null) {
-            return new String(rtrim($this->value, $charlist));
-        }
-
-        public function toString () {
-            return $this->__toString();
-        }
-    }
-    class Arr extends ArrayObject {
-        private static $ret_obj = true;
-
-        public function add () {
-            $val = 0;
-            foreach($this as $vals) {
-                $val += $vals;
-            }
-            return $val;
-        }
-
-        public function get ($i) {
-            $val = $this->offsetGet($i);
-            if(is_array($val)) {
-                return new self($val);
-            }
-            if(is_string($val) && self::$ret_obj) {
-                return new String($val);
-            }
-            return $val;
-        }
-
-        public function each ($callback) {
-            foreach($this as $key => $val) {
-                call_user_func_array($callback, array(
-                    $val, $key, $this
-                ));
-            }
-            return $this;
-        }
-
-        public function set ($i, $v) {
-            $this->offsetSet($i, $v);
-            return $this;
-        }
-
-        public function push ($value) {
-            $this[] = $value;
-            return $this;
-        }
-
-        public function sort () {
-            $this->asort();
-            return $this;
-        }
-
-        public function toArray () {
-            return $this->getArrayCopy();
-        }
-
-        public function natsort () {
-            parent::natsort();
-            return $this;
-        }
-
-        public function rsort () {
-            parent::uasort('Arr::sort_alg');
-            return $this;
-        }
-
-        public static function sort_alg ($a,$b) {
-            if ($a == $b) {
-                return 0;
-            }
-            return ($a < $b) ? 1 : -1;
-        }
-    }
-*/
