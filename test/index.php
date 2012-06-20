@@ -79,7 +79,7 @@
             $this->assertEqual($this->str->find('子'), 10);
             $this->assertEqual($this->str->find('子', 0, 9), -1);
         }
-        
+
         function test_format () {
             $this->assertEqual(false, true);
         }
@@ -216,15 +216,15 @@
             $a = new Str ('歲');
             $this->assertEqual($a->join($iterable), '1歲 2歲ffffuuuu-歲歲');
         }
-        
+
         function test_json () {
             $this->assertEqual($this->str->json(), '"twenTY-2\u6b72\u7537\u5b50"');
         }
-        
+
         function test_lastIndexOf () {
             $this->assertEqual($this->str->lastIndexOf('Y'), 5);
         }
-        
+
         function test_length () {
             $this->assertEqual($this->str->length(), 11);
         }
@@ -314,7 +314,7 @@
             $this->assertEqual($this->str->rjust(15, 't'), 'tttttwenTY-2歲男子');
             $this->assertEqual($this->str->rjust(13, '男'), '男男twenTY-2歲男子');
         }
-        
+
         function test_rindex () {
             // Return the highest index in the string where substring sub is
             // found, such that sub is contained within s[start:end]. Optional
@@ -399,15 +399,15 @@
             // "They're Bill's Friends."
             $this->assertEqual(false, true);
         }
-        
+
         public function test_toLowerCase () {
             $this->assertEqual($this->str->toLowerCase(), "twenty-2歲男子");
-        }        
+        }
 
         public function test_toUpperCase () {
             $this->assertEqual($this->str->toUpperCase(), "TWENTY-2歲男子");
         }
-        
+
         public function test_translate () {
             // Return a copy of the string where all characters occurring in the optional argument deletechars are removed, and the remaining characters have been mapped through the given translation table, which must be a string of length 256.
             // You can use the maketrans() helper function in the string module to create a translation table. For string objects, set the table argument to None for translations that only delete characters:
@@ -423,7 +423,7 @@
             // Return a copy of the string with all the cased characters [4] converted to uppercase. Note that str.upper().isupper() might be False if s contains uncased characters or if the Unicode category of the resulting character(s) is not “Lu” (Letter, uppercase), but e.g. “Lt” (Letter, titlecase).
             // For 8-bit strings, this method is locale-dependent.
             $this->assertEqual($this->str->upper(), "TWENTY-2歲男子");
-        }        
+        }
 
         public function test_zfill () {
             // Return the numeric string left filled with zeros in a string of length width. A sign prefix is handled correctly. The original string is returned if width is less than or equal to len(s).

@@ -38,7 +38,7 @@
                     }
                     foreach ($unit_test_classes as $unit_test_class) {
                 ?>
-                    <h2>Class 
+                    <h2>Class
                         <?php
                             echo (get_class ($unit_test_class));
                             echo ("<br />");
@@ -60,16 +60,16 @@
                                 <tr>
                                     <td>$i</td>
                                     <td>" . $result['method'] . "</td>
-                                    <td>" . 
-                                        ($result['success'] ? 
-                                            "Passed" : 
+                                    <td>" .
+                                        ($result['success'] ?
+                                            "Passed" :
                                             "<span style='background-color:red;
                                                           color:white;
                                                           padding:4px;
                                                           border-radius:3px;'>
                                                 Failed
                                             </span>"
-                                        ) . 
+                                        ) .
                                     "</td>
                                     <td>" . $result['message'] . "</td>
                                 </tr>");
