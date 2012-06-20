@@ -26,20 +26,6 @@
             $this->assertEqual($this->str->center(13, '-'), "-twenTY-2歲男子-");
         }
 
-        function test_charAt () {
-            $this->assertEqual($this->str->charAt(0), "t");
-            $this->assertEqual($this->str->charAt(1), "w");
-            $this->assertEqual($this->str->charAt(10), "子");
-            $this->assertEqual($this->str->charAt(-1), "子");
-        }
-
-        function test_charCodeAt () {
-            // JS
-            $this->assertEqual($this->str->charCodeAt(0), ord('t'));
-            $this->assertEqual($this->str->charCodeAt(1), ord('w'));
-            $this->assertEqual($this->str->charCodeAt(-1), ord('子'));
-        }
-
         function test_concat () {
             $this->assertEqual($this->str->concat(''), 'twenTY-2歲男子');
             $this->assertEqual($this->str->concat(' '), 'twenTY-2歲男子 ');
@@ -82,10 +68,6 @@
 
         function test_format () {
             $this->assertEqual(false, true);
-        }
-
-        function test_fromCharCode () {
-            $this->assertEqual($this->str->fromCharCode(65), 'A');
         }
 
         function test_index () {
@@ -398,14 +380,6 @@
             // >>> titlecase("they're bill's friends.")
             // "They're Bill's Friends."
             $this->assertEqual(false, true);
-        }
-
-        public function test_toLowerCase () {
-            $this->assertEqual($this->str->toLowerCase(), "twenty-2歲男子");
-        }
-
-        public function test_toUpperCase () {
-            $this->assertEqual($this->str->toUpperCase(), "TWENTY-2歲男子");
         }
 
         public function test_translate () {
