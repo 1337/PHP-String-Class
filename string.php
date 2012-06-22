@@ -618,15 +618,15 @@ class Str implements IteratorAggregate, ArrayAccess {
                                         mb_detect_encoding($s, self::DE));
     }
 
-    public function __toString()) {
+    public function __toString() {
         return $this->s;
     }
 
-    public function doc()) {
-        return get_class_methods(get_class()));
+    public function doc() {
+        return get_class_methods(get_class());
     }
 
-    public function getIterator()) {
+    public function getIterator() {
         // http://ca2.php.net/manual/en/class.iteratoraggregate.php
         // ?!
         return new ArrayIterator($this);
